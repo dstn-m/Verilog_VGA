@@ -17,7 +17,9 @@
 //              disp_active_o (active high, signals that current pixel is in display region)
 //                                                              
 //              _ _____________________________  sync  __________________________
-//               |   disp region     | b porch |______| f porch  |    next disp...
+//               |   disp region     | f porch |______| b porch  |    next disp...
+//
+//              Timing derived from Basys3 Reference Manual, VGA section, Figure 14 
 //
 // Revision:
 //////////////////////////////////////////////////////////////////////////////////
@@ -32,15 +34,15 @@ module vga_controller(
     );
     // define constant parameters 
     localparam H_DISP = 640;    // horizonal display module vga_controller
-    localparam H_BPORCH = 50;   // horizontal back module vga_controller //40+8
-    localparam H_FPORCH = 18;   // horizontal front module vga_controller //8+8 
-    localparam H_SYNC = 92;     // horizontal sync // 96
-    localparam H_FRAME = 800;   // total frame pixel width
+    localparam H_BPORCH = 50;   // horizontal back module vga_controller
+    localparam H_FPORCH = 18;   // horizontal front module vga_controller
+    localparam H_SYNC = 92;     // horizontal sync
+    localparam H_FRAME = H_DISP + H_BPORCH + H_FPORCH + H_SYNC;   // total frame pixel width
     localparam V_DISP = 480;    // vertical display module vga_controller
     localparam V_BPORCH = 29;   // vertical back module vga_controller 
     localparam V_FPORCH = 10;   // vertical front module vga_controller  
     localparam V_SYNC = 2;     // vertical sync
-    localparam V_FRAME = 521;   // vertial frame pixel heigh
+    localparam V_FRAME = V_DISP + V_BPORCH + V_FPORCH + V_SYNC;   // vertial frame pixel height
  
 reg[9:0] col_cnt, row_cnt = 0;
 reg hsync, vsync; 
@@ -77,14 +79,15 @@ begin
         vsync <= 1;
     end
     else begin
-        if ((col_cnt < H_FRAME - H_BPORCH) &&
+    // 
+        if ((col_cnt < H_FRAME - H_BPORCH -1) &&
             (col_cnt > H_DISP + H_FPORCH)) begin
             hsync <= 0;
         end    
         else begin
             hsync <= 1;
         end     
-        if ((row_cnt < V_FRAME - V_BPORCH) &&
+        if ((row_cnt < V_FRAME - V_BPORCH -1) &&
             (row_cnt > V_DISP + V_FPORCH)) begin
             vsync <= 0;
         end    
