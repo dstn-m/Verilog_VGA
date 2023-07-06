@@ -14,7 +14,7 @@ module vga_top(
     input clk_i, rst_i, // 25MHz clk, active high reset
     output hsync_o, vsync_o, clk_o,
     output disp_active,
-    output [9:0] xcol_o, yrow_o 
+    output [10:0] xcol_o, yrow_o  
     );
     
 wire clk_25MHz;

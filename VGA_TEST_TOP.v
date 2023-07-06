@@ -27,7 +27,7 @@ module VGA_TEST_TOP(
     );
     
 wire disp_active, clk_25MHz;
-wire[9:0] xcol, yrow; 
+wire[10:0] xcol, yrow; 
 wire[11:0] color;  
  
     

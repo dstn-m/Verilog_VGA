@@ -23,11 +23,12 @@ begin
         cnt <= 0;
         clk_o <= 1;
     end
-    else if (cnt == 3) begin
-        clk_o <= ~ clk_o;
-    end    
     else begin
         cnt <= cnt + 1;        
-    end
+    end    
+    if (cnt == 2'b11) begin
+        clk_o <= ~clk_o;
+    end    
+
 end     
 endmodule
