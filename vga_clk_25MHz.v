@@ -15,7 +15,7 @@ module vga_clk_25MHz(
     input clk_i, rst_i,
     output reg clk_o
     );
-reg[1:0] cnt;
+reg cnt;
   
 always @(posedge clk_i)
 begin
@@ -26,7 +26,7 @@ begin
     else begin
         cnt <= cnt + 1;        
     end    
-    if (cnt == 2'b11) begin
+    if (cnt) begin
         clk_o <= ~clk_o;
     end    
 

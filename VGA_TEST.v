@@ -32,10 +32,7 @@ reg[11:0] red = 12'hF00, blu = 12'h00F, grn = 12'h0F0;
 
 always @(posedge clk_i)
 begin
-    if(xcol_o < 100 && yrow_o < 100) begin
-        color_o <= red;
-    end
-    else if(disp_active == 1) begin
+    if(disp_active == 1) begin
         color_o <= blu;
     end
     else begin

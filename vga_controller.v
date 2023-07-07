@@ -34,8 +34,8 @@ module vga_controller(
     );
     // define constant parameters 
     localparam H_DISP = 640;    // horizonal display module vga_controller
-    localparam H_BPORCH = 50;   // horizontal back module vga_controller //40+8
-    localparam H_FPORCH = 18;   // horizontal front module vga_controller //8+8 
+    localparam H_BPORCH = 48;   // horizontal back module vga_controller //40+8
+    localparam H_FPORCH = 16;   // horizontal front module vga_controller //8+8 
     localparam H_SYNC = 96;     // horizontal sync // 96
     localparam H_FRAME = 800;   // total frame pixel width
     localparam V_DISP = 480;    // vertical display module vga_controller
@@ -45,7 +45,8 @@ module vga_controller(
     localparam V_FRAME = 525;   // vertial frame pixel heigh
  
 reg[10:0] col_cnt, row_cnt = 0;
-reg hsync, vsync = 1; 
+reg hsync, vsync = 0; 
+reg sync_p = 0;
 // row and column counter    
 // increment the vertical counter and reset horizontal counter 
 // when pixel reaches end of horizontal frame
@@ -75,15 +76,15 @@ end
 always @(posedge clk_i) 
 begin
     if (rst_i) begin
-        hsync <= 1;
+        hsync <= ~ sync_p;
     end
     else begin
-        if ((col_cnt < (H_FRAME - H_BPORCH)) &&
-            (col_cnt >= (H_DISP + H_FPORCH))) begin
-            hsync <= 0;
+        if ((col_cnt < (H_DISP + H_FPORCH)) ||
+            (col_cnt > (H_FRAME - H_BPORCH-1))) begin
+            hsync <= ~sync_p;
         end    
         else begin
-            hsync <= 1;
+            hsync <= sync_p;
         end                                              
     end
 end 
@@ -92,15 +93,15 @@ end
 always @(posedge clk_i) 
 begin
     if (rst_i) begin
-        vsync <= 1;
+        vsync <= ~sync_p;
     end
     else begin   
-        if ((row_cnt < (V_FRAME - V_BPORCH)) &&
-            (row_cnt >= (V_DISP + V_FPORCH))) begin
-            vsync <= 0;
+        if ((row_cnt < (V_DISP + V_BPORCH)) ||
+            (row_cnt > (V_FRAME - V_FPORCH -1))) begin
+            vsync <= ~sync_p;
         end    
         else begin
-            vsync <= 1;
+            vsync <= sync_p;
         end                                                    
     end
 end    
